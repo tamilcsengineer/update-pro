@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoQuest - Gamified Environmental Education</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --secondary: #1565C0;
+            --accent: #FF9800;
+            --light: #E8F5E9;
+            --dark: #1B5E20;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .navbar {
+            background-color: var(--primary);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand, .nav-link {
+            color: white !important;
+            font-size: 1.1rem;
+        }
+        
+        .nav-link.active {
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .container-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .dashboard-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .challenges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .challenge-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .challenge-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .challenge-header h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        
+        .challenge-content {
+            padding: 20px;
+        }
+        
+        .challenge-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .participants {
+            color: #3498db;
+        }
+        
+        .points {
+            color: #27ae60;
+        }
+        
+        .description {
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .join-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .join-btn:hover {
+            background: #219653;
+        }
+        
+        .joined {
+            background: #7f8c8d;
+        }
+        
+        .joined:hover {
+            background: #727f80;
+        }
+        
+        .leaderboard {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .leaderboard h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+        }
+        
+        .leaderboard-date {
+            text-align: right;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .school-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .school-list li {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        
+        .school-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .school-rank {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            width: 30px;
+        }
+        
+        .school-name {
+            flex-grow: 1;
+            margin-left: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .school-points {
+            background: #3498db;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            left: 15px;
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-100px);
+            transition: transform 0.5s ease;
+            z-index: 1000;
+            text-align: center;
+            display: none;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            display: block;
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+        }
+        
+        .notification.warning {
+            background: #f39c12;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .badge-card {
+            background-color: var(--light);
+            padding: 15px !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .progress {
+            height: 8px;
+            margin: 8px 0;
+        }
+        
+        .eco-points {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .badge-icon {
+            font-size: 1.8rem;
+            color: #FFD700;
+        }
+        
+        #aiVerification, #arView {
+            padding: 20px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #aiVerification {
+            background-color: #E3F2FD;
+        }
+        
+        #arView {
+            background-color: #FFF8E1;
+            text-align: center;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 25px 0;
+            margin-top: 40px;
+            border-radius: 0;
+        }
+        
+        /* AR Camera Styles */
+        #cameraContainer {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        #cameraFeed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .ar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .ar-object {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .impact-stats {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .impact-item {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .impact-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .impact-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        /* Invitation Section Styles - IMPROVED */
+        .invitation-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .invite-card {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .invite-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .referral-code {
+            background: white;
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin: 15px 0;
+            display: inline-block;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .social-share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            transition: transform 0.3s;
+        }
+        
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .facebook {
+            background: #3b5998;
+        }
+        
+        .twitter {
+            background: #1da1f2;
+        }
+        
+        .whatsapp {
+            background: #25d366;
+        }
+        
+        .email {
+            background: #ea4335;
+        }
+        
+        .friends-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .friends-list li {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .friends-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .friend-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .friend-info {
+            flex-grow: 1;
+        }
+        
+        .friend-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .friend-status {
+            font-size: 0.9rem;
+        }
+        
+        .text-success {
+            color: #27ae60 !important;
+        }
+        
+        .stats-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+        }
+        
+        /* Mobile-specific improvements */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+            }
+            
+            .container-main {
+                padding: 10px;
+            }
+            
+            .challenges-container {
+                gap: 15px;
+            }
+            
+            .dashboard-section {
+                padding: 15px;
+            }
+            
+            .challenge-content {
+                padding: 15px;
+            }
+            
+            .school-list li {
+                flex-wrap: wrap;
+            }
+            
+            .school-name {
+                margin: 5px 0;
+                width: 100%;
+                order: 3;
+            }
+            
+            .school-points {
+                margin-top: 5px;
+            }
+            
+            /* Stack dashboard columns */
+            .dashboard-section .row > div {
+                margin-bottom: 20px;
+            }
+            
+            /* Adjust AR/AI section */
+            #aiVerification, #arView {
+                margin-bottom: 20px;
+            }
+            
+            /* Adjust badge grid */
+            .badge-card {
+                margin-bottom: 15px;
+            }
+            
+            /* Navigation adjustments */
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .nav-link {
+                font-size: 1rem;
+                padding: 8px 15px !important;
+            }
+            
+            /* Button sizing */
+            .btn-lg {
+                padding: 10px 20px;
+                font-size: 1.1rem;
+            }
+            
+            /* Progress text */
+            .challenge-card p {
+                font-size: 0.9rem;
+            }
+            
+            /* Modal adjustments */
+            .modal-content {
+                border-radius: 12px;
+            }
+            
+            /* AR Camera adjustments */
+            #cameraContainer {
+                height: 250px;
+            }
+            
+            /* Invitation adjustments */
+            .social-share-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .invitation-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .invite-card {
+                padding: 15px;
+            }
+            
+            .invite-icon {
+                font-size: 2.2rem;
+            }
+            
+            .referral-code {
+                font-size: 1rem;
+                padding: 10px;
+            }
+            
+            .share-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .friends-list li {
+                padding: 10px 8px;
+            }
+            
+            .friend-avatar {
+                width: 40px;
+                height: 40px;
+                margin-right: 12px;
+                font-size: 0.9rem;
+            }
+            
+            .friend-name {
+                font-size: 1rem;
+            }
+            
+            .friend-status {
+                font-size: 0.85rem;
+            }
+            
+            .stats-box {
+                padding: 12px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+            
+            .challenge-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .leaderboard h2 {
+                font-size: 1.4rem;
+            }
+            
+            .dashboard-section h4 {
+                font-size: 1.2rem;
+            }
+            
+            .eco-points {
+                font-size: 1rem;
+            }
+            
+            .badge-icon {
+                font-size: 1.6rem;
+            }
+            
+            .feature-icon {
+                font-size: 1.8rem;
+            }
+            
+            #aiVerification h3, #arView h3 {
+                font-size: 1.3rem;
+            }
+            
+            .school-list li {
+                font-size: 0.9rem;
+            }
+            
+            .school-rank {
+                font-size: 1rem;
+                width: 25px;
+            }
+            
+            .school-points {
+                font-size: 0.85rem;
+                padding: 3px 10px;
+            }
+            
+            /* AR Camera adjustments */
+            #cameraContainer {
+                height: 200px;
+            }
+            
+            /* Invitation adjustments */
+            .invite-icon {
+                font-size: 2rem;
+            }
+            
+            .referral-code {
+                font-size: 0.95rem;
+                letter-spacing: 0;
+            }
+            
+            .share-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+            
+            .friend-avatar {
+                width: 38px;
+                height: 38px;
+                margin-right: 10px;
+            }
+            
+            .friend-info {
+                min-width: 0;
+            }
+            
+            .friend-name {
+                font-size: 0.95rem;
+            }
+            
+            .friend-status {
+                font-size: 0.8rem;
+                display: flex;
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .hero-section {
+                padding: 30px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.6rem;
+            }
+            
+            .challenge-stats {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .challenge-header {
+                padding: 12px 10px;
+            }
+            
+            .challenge-header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .challenge-header p {
+                font-size: 0.9rem;
+            }
+            
+            /* AR Camera adjustments */
+            #cameraContainer {
+                height: 180px;
+            }
+            
+            /* Invitation adjustments */
+            .social-share-buttons {
+                gap: 8px;
+            }
+            
+            .share-btn {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .friends-list li {
+                flex-wrap: wrap;
+            }
+            
+            .friend-info {
+                width: 100%;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-leaf me-2"></i>EcoQuest</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#challenges"><i class="fas fa-tasks me-1"></i> Challenges</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#leaderboard"><i class="fas fa-trophy me-1"></i> Leaderboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#invite"><i class="fas fa-user-plus me-1"></i> Invite Friends</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="fas fa-user me-1"></i> Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="fw-bold">Make Environmental Learning Fun</h1>
+            <p class="lead">Earn points, unlock badges, and compete with friends while saving the planet</p>
+            <button class="btn btn-primary btn-lg mt-3" data-bs-toggle="modal" data-bs-target="#registerModal">Get Started</button>
+        </div>
+    </section>
+
+    <div class="container-main">
+        <!-- Dashboard Section -->
+        <section id="dashboard">
+            <h2 class="text-center mb-4" style="color: white;">Your EcoQuest Dashboard</h2>
+            
+            <div class="dashboard-section">
+                <div class="row">
+                    <!-- User Stats -->
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <img src="https://ui-avatars.com/api/?name=Student+User&background=2E7D32&color=fff" class="rounded-circle mx-auto mb-3" width="80" alt="User">
+                            <h4>Student User</h4>
+                            <p class="text-muted">Greenwood High School</p>
+                            <div class="eco-points">
+                                <i class="fas fa-seedling me-2"></i> <span id="userPoints">1,250</span> Points
+                            </div>
+                            <div class="mt-3">
+                                <span class="badge bg-primary me-1">Level <span id="userLevel">5</span> Eco-Warrior</span>
+                                <span class="badge bg-success"><span id="badgeCount">8</span> Badges</span>
+                            </div>
+                            <div class="mt-3">
+                                <span class="badge bg-info"><i class="fas fa-users me-1"></i> <span id="friendCount">3</span> Friends</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Challenges -->
+                    <div class="col-md-8">
+                        <div class="card p-3">
+                            <h4><i class="fas fa-tasks me-2"></i> Active Challenges</h4>
+                            
+                            <div class="challenge-card p-3 mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <h5>Waste Sorting Master</h5>
+                                    <span class="badge bg-warning">3 days left</span>
+                                </div>
+                                <p>Correctly sort waste into recycling, compost, and trash bins</p>
+                                <div class="progress">
+                                    <div class="progress-bar" id="wasteProgress" style="width: 75%"></div>
+                                </div>
+                                <p><span id="wastePercent">75</span>% complete • 150 points reward</p>
+                                <button class="btn btn-sm btn-primary" onclick="updateProgress('waste', 10)">Make Progress</button>
+                            </div>
+                            
+                            <div class="challenge-card p-3 mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <h5>Water Conservation Challenge</h5>
+                                    <span class="badge bg-warning">5 days left</span>
+                                </div>
+                                <p>Reduce your water usage by taking shorter showers</p>
+                                <div class="progress">
+                                    <div class="progress-bar" id="waterProgress" style="width: 40%"></div>
+                                </div>
+                                <p><span id="waterPercent">40</span>% complete • 200 points reward</p>
+                                <button class="btn btn-sm btn-primary" onclick="updateProgress('water', 15)">Make Progress</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Badges Earned -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card p-3">
+                            <h4><i class="fas fa-medal me-2"></i> Your Badges</h4>
+                            <div class="row mt-3">
+                                <div class="col-6 col-sm-3 text-center mb-3">
+                                    <div class="badge-card">
+                                        <i class="fas fa-recycle badge-icon"></i>
+                                        <h6 class="mt-2">Recycling Expert</h6>
+                                        <small>Earned: 2 days ago</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 text-center mb-3">
+                                    <div class="badge-card">
+                                        <i class="fas fa-tint badge-icon"></i>
+                                        <h6 class="mt-2">Water Saver</h6>
+                                        <small>Earned: 1 week ago</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 text-center mb-3">
+                                    <div class="badge-card">
+                                        <i class="fas fa-tree badge-icon"></i>
+                                        <h6 class="mt-2">Tree Hugger</h6>
+                                        <small>Earned: 2 weeks ago</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 text-center mb-3">
+                                    <div class="badge-card">
+                                        <i class="fas fa-bolt badge-icon"></i>
+                                        <h6 class="mt-2">Energy Master</h6>
+                                        <small>Earned: 3 weeks ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environmental Impact Stats -->
+        <section class="impact-stats">
+            <h2 class="text-center mb-4">Your Environmental Impact</h2>
+            <div class="row">
+                <div class="col-6 col-md-3 impact-item">
+                    <div class="impact-number" id="co2Saved">124</div>
+                    <div class="impact-label">kg of CO₂ Saved</div>
+                </div>
+                <div class="col-6 col-md-3 impact-item">
+                    <div class="impact-number" id="waterSaved">560</div>
+                    <div class="impact-label">Liters of Water Saved</div>
+                </div>
+                <div class="col-6 col-md-3 impact-item">
+                    <div class="impact-number" id="wasteRecycled">38</div>
+                    <div class="impact-label">kg of Waste Recycled</div>
+                </div>
+                <div class="col-6 col-md-3 impact-item">
+                    <div class="impact-number" id="treesPlanted">5</div>
+                    <div class="impact-label">Trees Planted</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Invitation Section -->
+        <section id="invite" class="invitation-section">
+            <h2 class="text-center mb-4">Invite Friends & Earn Rewards</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="invite-card">
+                        <div class="invite-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h4>Invite Friends, Get Rewards</h4>
+                        <p>For each friend who joins, you'll both earn 50 bonus points!</p>
+                        
+                        <div class="referral-code" id="referralCode">ECO-FRIEND-2023</div>
+                        
+                        <button class="btn btn-primary mb-3" onclick="copyReferralCode()">
+                            <i class="fas fa-copy me-2"></i> Copy Invitation Code
+                        </button>
+                        
+                        <p class="mb-3">Or share directly via:</p>
+                        
+                        <div class="social-share-buttons">
+                            <a href="#" class="share-btn facebook" onclick="shareOnFacebook(event)">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="share-btn twitter" onclick="shareOnTwitter(event)">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="share-btn whatsapp" onclick="shareOnWhatsApp(event)">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="#" class="share-btn email" onclick="shareViaEmail(event)">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-user-friends me-2"></i> Your Invitations</h4>
+                            <p class="text-muted">Friends who joined using your code:</p>
+                            
+                            <ul class="friends-list">
+                                <li>
+                                    <div class="friend-avatar">JS</div>
+                                    <div class="friend-info">
+                                        <div class="friend-name">John Smith</div>
+                                        <div class="friend-status text-success">
+                                            <i class="fas fa-check-circle me-1"></i> Joined 2 days ago • +50 points
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="friend-avatar">EM</div>
+                                    <div class="friend-info">
+                                        <div class="friend-name">Emma Miller</div>
+                                        <div class="friend-status text-success">
+                                            <i class="fas fa-check-circle me-1"></i> Joined 1 week ago • +50 points
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="friend-avatar">DR</div>
+                                    <div class="friend-info">
+                                        <div class="friend-name">David Rodriguez</div>
+                                        <div class="friend-status text-muted">
+                                            <i class="fas fa-clock me-1"></i> Pending acceptance
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                            <div class="stats-box">
+                                <div class="stat-item">
+                                    <span>Total friends invited:</span>
+                                    <span class="stat-value">3</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Total bonus points earned:</span>
+                                    <span class="stat-value text-success">+100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="dashboard-section">
+            <h3 class="mb-4">How It Works</h3>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="text-center">
+                        <div class="invite-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h5>1. Share Your Code</h5>
+                        <p class="text-muted">Share your unique referral code with friends</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="text-center">
+                        <div class="invite-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h5>2. Friends Join</h5>
+                        <p class="text-muted">Your friends sign up using your referral code</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="text-center">
+                        <div class="invite-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h5>3. Earn Rewards</h5>
+                        <p class="text-muted">You both get 50 points when they complete their first challenge</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI and AR Features -->
+        <section class="py-4">
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <div id="aiVerification">
+                        <h3><i class="fas fa-robot me-2"></i> AI Verification</h3>
+                        <p>Upload a photo of your completed challenge for automatic verification</p>
+                        
+                        <div class="mb-3">
+                            <label for="challengePhoto" class="form-label">Upload your proof</label>
+                            <input class="form-control" type="file" id="challengePhoto" accept="image/*">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="verifyImage()">Verify Now</button>
+                        
+                        <div id="verificationResult" class="mt-3"></div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6">
+                    <div id="arView">
+                        <h3><i class="fas fa-vr-cardboard me-2"></i> AR Experience</h3>
+                        <p>Point your camera to see environmental information in augmented reality</p>
+                        
+                        <div id="cameraContainer">
+                            <video id="cameraFeed" autoplay playsinline></video>
+                            <div class="ar-overlay" id="arOverlay">
+                                <!-- AR objects will be added here dynamically -->
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <button class="btn btn-primary" id="startARBtn" onclick="startAR()">
+                                <i class="fas fa-camera me-2"></i> Start AR Camera
+                            </button>
+                            <button class="btn btn-secondary" id="stopARBtn" onclick="stopAR()" style="display: none;">
+                                <i class="fas fa-stop me-2"></i> Stop AR Camera
+                            </button>
+                        </div>
+                        
+                        <div id="arInfo" class="p-3 bg-white rounded">
+                            <p class="text-muted">Camera feed will appear here when activated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Challenges Section -->
+        <section id="challenges">
+            <h2 class="text-center mb-4" style="color: white;">Available Challenges</h2>
+            
+            <div class="challenges-container">
+                <div class="challenge-card">
+                    <div class="challenge-header">
+                        <h2>Plastic-Free Week</h2>
+                        <p>Avoid single-use plastics for 7 days</p>
+                    </div>
+                    <div class="challenge-content">
+                        <div class="challenge-stats">
+                            <span class="participants"><i class="fas fa-users"></i> <span id="participants1">245</span> participants</span>
+                            <span class="points"><i class="fas fa-trophy"></i> 100 points</span>
+                        </div>
+                        <p class="description">Commit to avoiding single-use plastics for an entire week. Document your journey and share tips with the community.</p>
+                        <button class="join-btn" id="challenge1Btn" onclick="joinChallenge(1)">Join Challenge</button>
+                    </div>
+                </div>
+                
+                <div class="challenge-card">
+                    <div class="challenge-header">
+                        <h2>Community Cleanup</h2>
+                        <p>Organize or join a local cleanup event</p>
+                    </div>
+                    <div class="challenge-content">
+                        <div class="challenge-stats">
+                            <span class="participants"><i class="fas fa-users"></i> <span id="participants2">180</span> participants</span>
+                            <span class="points"><i class="fas fa-trophy"></i> 150 points</span>
+                        </div>
+                        <p class="description">Organize or join a local park or beach cleanup event. Make a tangible difference in your community's environment.</p>
+                        <button class="join-btn" id="challenge2Btn" onclick="joinChallenge(2)">Join Challenge</button>
+                    </div>
+                </div>
+                
+                <div class="challenge-card">
+                    <div class="challenge-header">
+                        <h2>Zero Waste Challenge</h2>
+                        <p>Reduce your waste for 30 days</p>
+                    </div>
+                    <div class="challenge-content">
+                        <div class="challenge-stats">
+                            <span class="participants"><i class="fas fa-users"></i> <span id="participants3">312</span> participants</span>
+                            <span class="points"><i class="fas fa-trophy"></i> 200 points</span>
+                        </div>
+                        <p class="description">Try to produce as little waste as possible for 30 days. Learn composting, recycling, and sustainable shopping habits.</p>
+                        <button class="join-btn" id="challenge3Btn" onclick="joinChallenge(3)">Join Challenge</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard">
+            <div class="leaderboard">
+                <h2>School Leaderboard</h2>
+                <div class="leaderboard-date" id="currentDateTime"></div>
+                <ul class="school-list">
+                    <li>
+                        <span class="school-rank">1</span>
+                        <span class="school-name">Greenwood High School</span>
+                        <span class="school-points">4,820 pts</span>
+                    </li>
+                    <li>
+                        <span class="school-rank">2</span>
+                        <span class="school-name">Eco Academy</span>
+                        <span class="school-points">4,150 pts</span>
+                    </li>
+                    <li>
+                        <span class="school-rank">3</span>
+                        <span class="school-name">Sustainable Learning Center</span>
+                        <span class="school-points">3,980 pts</span>
+                    </li>
+                    <li>
+                        <span class="school-rank">4</span>
+                        <span class="school-name">Nature's Way School</span>
+                        <span class="school-points">3,760 pts</span>
+                    </li>
+                    <li>
+                        <span class="school-rank">5</span>
+                        <span class="school-name">Community Environmental School</span>
+                        <span class="school-points">3,540 pts</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p>EcoQuest - Gamified Environmental Education Platform</p>
+            <div class="mb-3">
+                <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <small>&copy; 2023 EcoQuest. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login to EcoQuest</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="loginRemember">
+                            <label class="form-check-label" for="loginRemember">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Register here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create an Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="registerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerSchool" class="form-label">School</label>
+                            <select class="form-select" id="registerSchool" required>
+                                <option value="" selected disabled>Select your school</option>
+                                <option>Greenwood High School</option>
+                                <option>Eco Academy</option>
+                                <option>Nature Valley School</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="referralCodeInput" class="form-label">Referral Code (optional)</label>
+                            <input type="text" class="form-control" id="referralCodeInput" placeholder="Enter friend's code">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="termsAgree" required>
+                            <label class="form-check-label" for="termsAgree">I agree to the <a href="#">Terms and Conditions</a></label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        Challenge joined successfully! You've earned points.
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // User data and state
+        const userData = {
+            points: 1250,
+            level: 5,
+            badges: 8,
+            friends: 3,
+            invitations: 3,
+            impact: {
+                co2: 124,
+                water: 560,
+                waste: 38,
+                trees: 5
+            },
+            challenges: {
+                active: {
+                    waste: 75,
+                    water: 40
+                },
+                joined: new Set()
+            }
+        };
+        
+        // Track joined challenges
+        let stream = null;
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 60000); // Update time every minute
+            
+            // Set up form submissions
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+            
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRegistration();
+            });
+            
+            // Initialize user stats
+            updateUserStats();
+        });
+        
+        function updateDateTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        function updateUserStats() {
+            document.getElementById('userPoints').textContent = userData.points.toLocaleString();
+            document.getElementById('userLevel').textContent = userData.level;
+            document.getElementById('badgeCount').textContent = userData.badges;
+            document.getElementById('friendCount').textContent = userData.friends;
+            document.getElementById('totalInvited').textContent = userData.invitations;
+            
+            // Update impact stats
+            document.getElementById('co2Saved').textContent = userData.impact.co2;
+            document.getElementById('waterSaved').textContent = userData.impact.water;
+            document.getElementById('wasteRecycled').textContent = userData.impact.waste;
+            document.getElementById('treesPlanted').textContent = userData.impact.trees;
+            
+            // Update progress bars
+            document.getElementById('wasteProgress').style.width = userData.challenges.active.waste + '%';
+            document.getElementById('wastePercent').textContent = userData.challenges.active.waste;
+            document.getElementById('waterProgress').style.width = userData.challenges.active.water + '%';
+            document.getElementById('waterPercent').textContent = userData.challenges.active.water;
+        }
+        
+       // ...existing code...
+       // ...existing code...
+
+    function handleRegistration() {
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const school = document.getElementById('registerSchool').value;
+        const referralCode = document.getElementById('referralCodeInput').value;
+        if (!name || !email || !password || !school) {
+            showNotification("Please fill in all fields", "error");
+            return;
+        }
+        if (!document.getElementById('termsAgree').checked) {
+            showNotification("Please agree to the terms and conditions", "error");
+            return;
+        }
+        setTimeout(() => {
+            const registerModal = document.getElementById('registerModal');
+            const modal = bootstrap.Modal.getInstance(registerModal);
+            modal.hide();
+            if (referralCode) {
+                showNotification("Registration successful! You've used a referral code and will receive bonus points after verification.");
+            } else {
+                showNotification("Registration successful! Welcome to EcoQuest.");
+            }
+        }, 1000);
+    }
+
+// ...existing code...
+function joinChallenge(challengeId) {
+    const button = document.getElementById('challenge' + challengeId + 'Btn');
+    const participantsElement = document.getElementById('participants' + challengeId);
+
+    // If already joined, show message
+    if (userData.challenges.joined.has(challengeId)) {
+        showNotification("You've already joined this challenge!", "warning");
+        return;
+    }
+
+    // Update button and participants count
+    button.textContent = "Joined";
+    button.classList.add('joined');
+    userData.challenges.joined.add(challengeId);
+
+    // Increase participants count
+    const currentParticipants = parseInt(participantsElement.textContent);
+    participantsElement.textContent = currentParticipants + 1;
+
+    // Award points based on challenge
+    let pointsEarned = 0;
+    switch(challengeId) {
+        case 1: pointsEarned = 25; break;
+        case 2: pointsEarned = 30; break;
+        case 3: pointsEarned = 50; break;
+    }
+
+    userData.points += pointsEarned;
+    updateUserStats();
+
+    // Update impact based on challenge
+    switch(challengeId) {
+        case 1:
+            userData.impact.waste += 5;
+            break;
+        case 2:
+            userData.impact.co2 += 10;
+            userData.impact.waste += 8;
+            break;
+        case 3:
+            userData.impact.co2 += 15;
+            userData.impact.water += 20;
+            break;
+    }
+
+    // Show success notification
+    showNotification(`Challenge joined successfully! You've earned ${pointsEarned} points.`);
+}
+
+function updateProgress(challengeType, amount) {
+    if (userData.challenges.active[challengeType] < 100) {
+        userData.challenges.active[challengeType] += amount;
+
+        // Cap at 100%
+        if (userData.challenges.active[challengeType] > 100) {
+            userData.challenges.active[challengeType] = 100;
+
+            // Award bonus points for completion
+            const bonusPoints = challengeType === 'waste' ? 150 : 200;
+            userData.points += bonusPoints;
+
+            // Update impact
+            if (challengeType === 'waste') {
+                userData.impact.waste += 12;
+            } else {
+                userData.impact.water += 45;
+                userData.impact.co2 += 8;
+            }
+
+            showNotification(`Challenge completed! You earned ${bonusPoints} bonus points.`);
+        }
+
+        updateUserStats();
+    }
+}
+
+function shareOnFacebook(e) {
+    e.preventDefault();
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=Join me on EcoQuest to learn about environmental conservation while earning points and badges!`;
+    window.open(url, '_blank');
+}
+
+function shareOnTwitter(e) {
+    e.preventDefault();
+    const text = "Join me on EcoQuest - a gamified platform for environmental education! Let's learn and earn points together while saving the planet. 🌍";
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+function shareOnWhatsApp(e) {
+    e.preventDefault();
+    const text = "Hey! Check out EcoQuest - a fun app that turns environmental learning into a game. Use my code ECO-FRIEND-2023 when you sign up and we'll both get bonus points!";
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+function shareViaEmail(e) {
+    e.preventDefault();
+    const subject = "Join me on EcoQuest!";
+    const body = `Hi there!
+
+I wanted to invite you to join EcoQuest - a gamified platform that makes learning about environmental conservation fun!
+
+With EcoQuest, you can:
+- Complete environmental challenges
+- Earn points and badges
+- Compete with friends and schools
+- Learn how to make a real impact
+
+Use my referral code when you sign up: ECO-FRIEND-2023
+
+We'll both get bonus points if you use my code!
+
+Check it out here: ${window.location.href}
+
+Let's help the planet together! 🌍
+
+Best,
+[Your Name]`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+// ...existing code...
+// ...existing code...
+function verifyImage() {
+    console.log("verifyImage called"); // Debug line
+    const fileInput = document.getElementById('challengePhoto');
+    const resultDiv = document.getElementById('verificationResult');
+    resultDiv.innerHTML = '';
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+        resultDiv.innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Please upload a photo before verifying.
+            </div>
+        `;
+        return;
+    }
+
+    resultDiv.innerHTML = '<div class="alert alert-info">Analyzing image...</div>';
+
+    setTimeout(() => {
+        const success = Math.random() > 0.3;
+        if (success) {
+            const pointsEarned = 50;
+            userData.points += pointsEarned;
+            userData.impact.co2 += 5;
+            userData.impact.waste += 2;
+            updateUserStats();
+
+            resultDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i> 
+                    Verification successful! You earned ${pointsEarned} points.
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i> 
+                    Could not verify. Please make sure the image clearly shows your environmental action.
+                </div>
+            `;
+        }
+    }, 2000);
+}
+// ...existing code...
+        
+        // AR Camera functionality
+        async function startAR() {
+            const cameraContainer = document.getElementById('cameraContainer');
+            const cameraFeed = document.getElementById('cameraFeed');
+            const startARBtn = document.getElementById('startARBtn');
+            const stopARBtn = document.getElementById('stopARBtn');
+            const arInfo = document.getElementById('arInfo');
+            
+            try {
+                // Request camera access
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                
+                // Show camera feed
+                cameraFeed.srcObject = stream;
+                cameraContainer.style.display = 'block';
+                arInfo.style.display = 'none';
+                
+                // Toggle buttons
+                startARBtn.style.display = 'none';
+                stopARBtn.style.display = 'inline-block';
+                
+                // Add AR objects after a short delay
+                setTimeout(addARObjects, 1000);
+                
+            } catch (error) {
+            console.error('Error accessing camera:', error);
+                arInfo.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Could not access camera: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function stopAR() {
+            const cameraContainer = document.getElementById('cameraContainer');
+            const startARBtn = document.getElementById('startARBtn');
+            const stopARBtn = document.getElementById('stopARBtn');
+            const arInfo = document.getElementById('arInfo');
+            
+            // Stop the camera stream
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            // Hide camera feed and show info
+            cameraContainer.style.display = 'none';
+            arInfo.style.display = 'block';
+            arInfo.innerHTML = '<p class="text-muted">Camera feed will appear here when activated</p>';
+            
+            // Toggle buttons
+            startARBtn.style.display = 'inline-block';
+            stopARBtn.style.display = 'none';
+            
+            // Clear AR objects
+            const arOverlay = document.getElementById('arOverlay');
+            arOverlay.innerHTML = '';
+        }
+        
+        function addARObjects() {
+            const arOverlay = document.getElementById('arOverlay');
+            
+            // Clear any existing objects
+            arOverlay.innerHTML = '';
+            
+            // Add some environmental AR objects
+            const objects = [
+                { type: 'tree', top: '20%', left: '30%', info: 'Oak Tree - Absorbs 48 lbs of CO2 per year' },
+                { type: 'recycle', top: '60%', left: '70%', info: 'Recycling Bin - Reduces landfill waste' },
+                { type: 'water', top: '40%', left: '50%', info: 'Water Conservation - Saves 3-5 gallons per day' }
+            ];
+            
+            objects.forEach(obj => {
+                const arObject = document.createElement('div');
+                arObject.className = 'ar-object';
+                arObject.style.top = obj.top;
+                arObject.style.left = obj.left;
+                
+                // Set icon based on type
+                if (obj.type === 'tree') {
+                    arObject.innerHTML = '<i class="fas fa-tree fa-2x text-success"></i>';
+                } else if (obj.type === 'recycle') {
+                    arObject.innerHTML = '<i class="fas fa-recycle fa-2x text-primary"></i>';
+                } else if (obj.type === 'water') {
+                    arObject.innerHTML = '<i class="fas fa-tint fa-2x text-info"></i>';
+                }
+                
+                // Add click event to show info
+                arObject.style.pointerEvents = 'auto';
+                arObject.style.cursor = 'pointer';
+                arObject.onclick = function() {
+                    showNotification(obj.info);
+                };
+                
+                arOverlay.appendChild(arObject);
+            });
+        }
+    </script>
+</body>
+</html>
